@@ -53,16 +53,3 @@ class API_return_parser_track:
         for i in range(len(self.body['tracks']['items'])):
             df.loc[i] = [self.return_track_name(result_index=i), self.return_first_artist_name(result_index=i), self.return_album_name(result_index=i), self.return_preview_url(result_index=i), self.return_cover_art_url(result_index=i)]
         return df
-
-
-
-
-
-
-class API_return_parser_album:
-
-    def __init__(self, raw_body):
-        self.body = raw_body
-
-    def r(self):
-        return self.body
