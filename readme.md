@@ -7,7 +7,7 @@ To run it, you will need a Spotify API key and secret, and set the environment u
 
 `export SPOTIPY_CLIENT_ID=[your spotify client id]`
 
-`export SPOTIPY_CLIENT_SECRET=[your spotify client id]`
+`export SPOTIPY_CLIENT_SECRET=[your spotify client secret]`
 
 `export SPOTIPY_REDIRECT_URI=[redirect uri, e.g. 'http://127.0.0.1:9090']`
 
