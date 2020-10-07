@@ -5,6 +5,8 @@ class API_return_parser_track:
 
     def __init__(self, raw_body):
         '''Initiates the object, setting the local body attribute to what the API has returned'''
+        if raw_body == None:
+            raise('The body text inputted is empty. This is probably because the API call has failed.')
         self.body = raw_body
 
     def return_track_name(self, result_index=0):
