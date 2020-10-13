@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+
+{% block content %}
+<div id="register">
+  <form method="post">
+
+      <h3>Register</h3>
+
+    <label for="username">Username</label>
+    <input name="username" id="username" value={{username}}>
+
+      <p></p>
+
+      <label for="email">Email</label>
+    <input name="email" id="email" value={{email}}>
+
+      <p></p>
+
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" value={{password}}>
+
+      <p></p>
+
+    <input type="submit" value="Register">
+    {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }} </p>
+  {% endif %}
+  </form>
+  </div>
+{% endblock %}
+
