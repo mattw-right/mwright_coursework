@@ -3,6 +3,8 @@ import re
 
 regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 
+common_passwords = open('login/common_passwords.txt').read().split('\n')
+
 def validate_username(username):
     '''The username validation rules are as follows:
         length<20 characters
@@ -29,4 +31,9 @@ def validate_password(password):
 
 def validate_email(email):
     if (re.search(regex, email)): return True
+    return False
+
+
+def is_common_password(password):
+    if password.lower() in common_passwords: return True
     return False

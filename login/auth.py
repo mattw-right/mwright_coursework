@@ -55,40 +55,47 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        password_verification = request.form["password_verification"]
         email = request.form['email']
         db = get_db()
-        error = ''
+        error = []
 
         if not username:
-            error += "Username is required. "
+            error.append("Username is required")
         if not password:
-            error += "Password is required. "
+            error.append("Password is required")
         if not email:
-            error += 'An email is required. '
+            error.append('An email is required')
         if not validate_password(password):
-            error += 'That password is invalid. '
+            error.append('That password is invalid')
             password = ''
         if not validate_username(username):
-            error += 'That username is invalid. '
+            error.append('That username is invalid')
             username = ''
         if not validate_email(email):
-            error += 'That email is invalid. '
+            if not ("An email is required. " in error):
+                error.append('That email is invalid')
             email = ''
+        if is_common_password(password):
+            error.append('That password is too common')
+            password = ''
+        if password != password_verification:
+            error.append("Those passwords don't match")
         if (
             db.execute("SELECT id FROM user WHERE username = ?", (username,)).fetchone()
             is not None
         ):
-            error += f"User {username} is already registered. "
+            error.append(f"User {username} is already registered")
             username = ''
 
         if (
             db.execute("SELECT id FROM user WHERE email = ?", (email,)).fetchone()
             is not None
         ):
-            error += f"That email is already registered. "
+            error.append(f"That email is already registered")
             email = ''
 
-        if error=='':
+        if error==[]:
             # the name is available, store it in the database and go to
             # the login page
             db.execute(
@@ -100,7 +107,18 @@ def register():
 
         #flash(error)
 
-        return render_template("auth/register.html", error=error, password=password, username=username)
+        error_message = ''
+
+
+        for i in range(len(error)):
+            error_message += error[i]
+            if i != len(error)-1:
+                error_message += '; '
+
+        error_message += '.'
+
+
+        return render_template("auth/register.html", error=error_message, password=password, username=username)
     return render_template("auth/register.html", error=None, password='', username='')
 
 
