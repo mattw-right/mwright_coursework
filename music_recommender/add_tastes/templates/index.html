@@ -1,0 +1,74 @@
+<!doctype html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+
+    <style>
+        .modal {
+            display: {{ display_boolean }};
+        }
+    </style>
+
+
+  <title>Search the Database</title>
+</head>
+<body>
+  <h1>Search the Database</h1>
+  <p>To create a listener profile, simply enter artists, songs, and descriptors you like below.</p>
+  <p>Try to create different Listener Profiles for your different tastes, e.g. one for 1960s rock, another for classical, as it will improve the recommendations you get.</p>
+
+  <form method="POST" id='form'>
+      <input name="artist" name='artist' id='artist' placeholder="Artist...">
+      <input name="song" name='song' id='song' placeholder="Song...">
+      <input name="descriptor" id='descriptor' placeholder="Descriptor"...>
+      <input type="submit" value="Search" id='submit'>
+  </form>
+
+  <div id='toolbar'>
+    <a id='toolbar_playlists'>My Playlists</a>
+    <a id='toolbar_tastes'>Add Tastes</a>
+    <a id='toolbar_profile'>My Profile</a>
+  </div>
+
+
+
+
+  <!-- Trigger/Open The Modal -->
+
+ <!-- The Modal -->
+ <div id="myModal" class="modal">
+
+
+
+   <!-- Modal content -->
+   <div class="modal-content">
+     <span class="close"></span>
+     <table class="greyGridTable">
+
+
+         {% for result in results %}
+<tr>
+         <td>  <img style="-webkit-user-select: none;margin: auto;cursor: zoom-in;" src={{ result[4] }} width="100" height="100" id='cover_art'></td>
+         <td>{{ result[0] }}</td>
+         <td>{{ result[1] }}</td>
+         <td>{{ result[2] }}</td>
+
+         <td><audio controls>
+         <source  src= {{ result[3] }} />
+       </audio></td>
+       <td><button class="add">+</button></td>
+</tr>
+         {% endfor %}
+
+
+
+
+   </table>
+   </div>
+
+ </div>
+
+
+</body>
+</html>

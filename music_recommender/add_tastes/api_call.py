@@ -33,4 +33,5 @@ def create_api_call(track=None, year=None, artist=None, album=None, genre=None, 
             print('Trouble connecting. Trying again')
             if i>10:
                 break
-    return results
+    if results: return results
+    raise('Oops! Cannot connect to server, please try again later.')

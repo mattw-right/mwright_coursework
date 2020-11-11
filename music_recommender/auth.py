@@ -1,5 +1,4 @@
 import functools
-import os
 
 from flask import Blueprint
 from flask import flash
@@ -9,11 +8,11 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
-from flask import Flask
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
+from music_recommender.login.validate import *
 
-from login.db import get_db
+from music_recommender.db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -48,38 +47,79 @@ def load_logged_in_user():
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     """Register a new user.
+
     Validates that the username is not already taken. Hashes the
     password for security.
     """
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        password_verification = request.form["password_verification"]
+        email = request.form['email']
         db = get_db()
-        error = None
+        error = []
 
         if not username:
-            error = "Username is required."
-        elif not password:
-            error = "Password is required."
-        elif (
+            error.append("Username is required")
+        if not password:
+            error.append("Password is required")
+        if not email:
+            error.append('An email is required')
+        if not validate_password(password):
+            error.append('That password is invalid')
+            password = ''
+        if not validate_username(username):
+            error.append('That username is invalid')
+            username = ''
+        if not validate_email(email):
+            if not ("An email is required. " in error):
+                error.append('That email is invalid')
+            email = ''
+        if is_common_password(password):
+            error.append('That password is too common')
+            password = ''
+        if password != password_verification:
+            error.append("Those passwords don't match")
+        if (
             db.execute("SELECT id FROM user WHERE username = ?", (username,)).fetchone()
             is not None
         ):
-            error = f"User {username} is already registered."
+            error.append(f"User {username} is already registered")
+            username = ''
 
-        if error is None:
+        if (
+            db.execute("SELECT id FROM user WHERE email = ?", (email,)).fetchone()
+            is not None
+        ):
+            error.append(f"That email is already registered")
+            email = ''
+
+        if error==[]:
             # the name is available, store it in the database and go to
             # the login page
             db.execute(
-                "INSERT INTO user (username, password) VALUES (?, ?)",
-                (username, generate_password_hash(password)),
+                "INSERT INTO user (username, password, email) VALUES (?, ?, ?)",
+                (username, generate_password_hash(password), email),
             )
             db.commit()
             return redirect(url_for("auth.login"))
 
-        flash(error)
+        #flash(error)
 
-    return render_template("auth/register.html")
+        error_message = ''
+
+
+        for i in range(len(error)):
+            error_message += error[i]
+            if i != len(error)-1:
+                error_message += '; '
+
+        error_message += '.'
+
+
+        return render_template("auth/register.html", error=error_message, password=password, username=username)
+    return render_template("auth/register.html", error=None, password='', username='')
 
 
 @bp.route("/login", methods=("GET", "POST"))
@@ -96,8 +136,10 @@ def login():
 
         if user is None:
             error = "Incorrect username."
+            username = ''
         elif not check_password_hash(user["password"], password):
             error = "Incorrect password."
+            password = ''
 
         if error is None:
             # store the user id in a new session and return to the index
@@ -107,57 +149,11 @@ def login():
 
         flash(error)
 
-    return render_template("auth/login.html")
-
+        return render_template("auth/login.html", error=error, password=password, username=username)
+    return render_template("auth/login.html", error=None, password='', username='')
 
 @bp.route("/logout")
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for("index"))
-
-
-def create_app(test_config=None):
-    """Create and configure an instance of the Flask application."""
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        # a default secret that should be overridden by instance config
-        SECRET_KEY="dev",
-        # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "sqlite"),
-    )
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
-    else:
-        # load the test config if passed in
-        app.config.update(test_config)
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    @app.route("/hello")
-    def hello():
-        return "Hello, World!"
-
-    # register the database commands
-    from login import db
-
-    db.init_app(app)
-
-    # apply the blueprints to the app
-    from login import auth
-
-    app.register_blueprint(auth.bp)
-
-    # make url_for('index') == url_for('body.index')
-    # in another app, you might define a separate main index here with
-    # app.route, while giving the body blueprint a url_prefix, but for
-    # the tutorial the body will be the main index
-    app.add_url_rule("/", endpoint="index")
-
-    return app

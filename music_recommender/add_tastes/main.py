@@ -1,6 +1,6 @@
 
-from api_call import create_api_call
-from api_return_parser import API_return_parser_track
+from music_recommender.add_tastes.api_call import create_api_call
+from music_recommender.add_tastes.api_return_parser import API_return_parser_track
 from flask import Flask
 from flask import render_template, request
 app = Flask(__name__)

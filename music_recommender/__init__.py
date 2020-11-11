@@ -1,6 +1,7 @@
 import os
-
 from flask import Flask
+app = Flask(__name__)
+
 
 
 def create_app(test_config=None):
@@ -26,21 +27,25 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route("/hello")
-    def hello():
-        return "Hello, World!"
-
     # register the database commands
-    from login import db
+    from music_recommender import db
 
     db.init_app(app)
 
     # apply the blueprints to the app
-    from login import auth
-    from login import body
+    from music_recommender import auth
+    from music_recommender.login import body
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(body.bp)
+
+    from music_recommender import add_tastes
+    from music_recommender import auth
+    from music_recommender import music_recommender
+
+    app.register_blueprint(add_tastes.bp)
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(music_recommender.bp)
 
     # make url_for('index') == url_for('body.index')
     # in another app, you might define a separate main index here with

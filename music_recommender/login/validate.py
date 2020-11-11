@@ -3,7 +3,7 @@ import re
 
 regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
 
-common_passwords = open('login/common_passwords.txt').read().split('\n')
+common_passwords = open('music_recommender/login/common_passwords.txt').read().split('\n')
 
 def validate_username(username):
     '''The username validation rules are as follows:
