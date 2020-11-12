@@ -1,13 +1,11 @@
 
 from recommend.api.api_call import create_api_call
 from recommend.api.api_return_parser import *
-#from recommend.add_tastes.api_call import create_api_call
-#from add_tastes.api_return_parser import API_return_parser_track, API_return_parser_artist
 from flask import Flask
 from flask import render_template, request, g, url_for, redirect
 from flask import Blueprint
 from recommend.auth import login_required
-from music_recommender.db import get_db
+from recommend.db import get_db, fetch_raw_listener_data
 
 app = Flask(__name__)
 
@@ -27,6 +25,34 @@ class Most_Recent_Return:
     def get(self):
         return self.x
 
+    def set_artists_and_tracks(self, tracks, artists):
+        self.tracks = tracks
+        self.artists = artists
+
+    def get_artists_and_tracks(self):
+        return self.artists, self.tracks
+
+def sort_raw_listener_data(raw_data):
+    raw_data = list(raw_data)
+    structured_data = []
+    for i in raw_data: structured_data.append(tuple(raw_data))
+    tracks = []
+    artists = []
+    try:
+        for i in structured_data[0]:
+            if i[-1].split(':')[1] == 'track': tracks.append(i[2])
+            else: artists.append(i[2])
+        most_recent_return.set_artists_and_tracks(tracks, artists)
+        return tracks, artists
+    except:
+        return [], []
+
+def cut_off_length(list, max_length):
+    output = []
+    for i in list:
+        if len(i) > max_length: output.append(i[:max_length])
+        else: output.append(i)
+    return output
 
 most_recent_return = Most_Recent_Return()
 
@@ -35,7 +61,9 @@ most_recent_return = Most_Recent_Return()
 @login_required
 def index():
     '''Renders the initial search page of the app'''
-    return render_template('add_tastes.html', display_boolean='none')
+    tracks, artists = sort_raw_listener_data(fetch_raw_listener_data())
+    tracks, artists = cut_off_length(tracks, 25), cut_off_length(artists, 25)
+    return render_template('add_tastes.html', display_boolean='none', tracks=tracks, artists=artists)
 
 
 def validate_query(query):
@@ -133,11 +161,34 @@ def add_to_listener_profile(id):
     if most_recent_return.get():
         db = get_db()
         db.execute(
-            "INSERT INTO listener_raw_data (username, listener_data) VALUES (?, ?)",
-            (g.user["username"], most_recent_return.get()[id][-1]),
+            "INSERT INTO listener_raw_data (username, title, listener_data) VALUES (?, ?, ?)",
+            (g.user["username"], most_recent_return.get()[id][0], most_recent_return.get()[id][-1]),
         )
-        print(most_recent_return.get()[id])
         db.commit()
+
+
+    return redirect(url_for('add_tastes'))
+
+
+@bp.route('/delete/artist/<int:id>')
+@login_required
+def delete_artist_from_listener_profile(id):
+    artists, _ = most_recent_return.get_artists_and_tracks()
+    db = get_db()
+    db.execute('DELETE FROM listener_raw_data WHERE username="{}" AND title="{}"'.format(g.user["username"], artists[id]))
+    db.commit()
+
+
+    return redirect(url_for('add_tastes'))
+
+@bp.route('/delete/track/<int:id>')
+@login_required
+def delete_track_from_listener_profile(id):
+    _, tracks = most_recent_return.get_artists_and_tracks()
+    db = get_db()
+    db.execute('DELETE FROM listener_raw_data WHERE username="{}" AND title="{}"'.format(g.user["username"], tracks[id]))
+    db.commit()
+
 
     return redirect(url_for('add_tastes'))
 
