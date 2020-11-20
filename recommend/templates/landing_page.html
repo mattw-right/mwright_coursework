@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/landing_page_style.css') }}">
 </head>
 <body>
 
-The is a landing page. It's pretty empty at the moment, but you can <a href="{{ url_for('auth.login') }}">login</a> or <a href="{{ url_for('auth.register') }}">register</a>
+<h1>The is a landing page. It's pretty empty at the moment, but you can <a href="{{ url_for('auth.login') }}">login</a> or <a href="{{ url_for('auth.register') }}">register</a></h1>
 
 
 </body>

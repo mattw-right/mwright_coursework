@@ -73,7 +73,7 @@ def validate_query(query):
     if len(query)>50:
         return False, 'Oops, that search term looks a little long'
     for i in list(query):
-        if i in list('@£%^()/\'[]{}`~±§'):
+        if i in list('@£%^()/\'[]{}~±§'):
             return False, 'Oops, there look to be some illegal characters in that search term'
     return True, ''
 

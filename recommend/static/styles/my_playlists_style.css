@@ -1,0 +1,70 @@
+
+h1{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 7vh;
+  padding-left: 3%;
+  color: #f6f7f9;
+}
+
+body{
+  background-color: #323a45;
+  height: 100%;
+}
+
+p{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3vh;
+  padding-left: 3%;
+  color: #5faeb6;
+
+}
+
+
+#toolbar{
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  color: #f6f7f9;
+  background: #5faeb6;
+  font-family: 'Montserrat', sans-serif;
+}
+
+#toolbar a{
+  float: left;
+  display: block;
+  text-align: center;
+  font-size: 5vh;
+  padding: 1%;
+  text-decoration: none;
+  color: #f6f7f9;
+}
+
+#toolbar_tastes{
+  font-weight:900;
+  /*position: relative;*/
+  /*left:42%;*/
+  margin-left: 8%;
+  margin-right: 8%;
+}
+
+#toolbar_profile{
+  font-weight:900;
+  /*position: absolute;*/
+  /*right: 3%;*/
+  margin-left: 8%;
+  margin-right: 8%;
+}
+
+#toolbar_playlists{
+  font-weight:900;
+  /*position: absolute;*/
+  /*left: 3%;*/
+  margin-left: 8%;
+  margin-right: 8%;
+}
+
+#toolbar a:hover {
+  color: #323a45;
+}
+

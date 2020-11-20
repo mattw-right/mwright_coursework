@@ -10,6 +10,10 @@
 
       <h3>Login</h3>
 
+    {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }} </p>
+    {% endif %}
+
     <div class="tooltip">
     <label for="username">Username</label>
       <span class="tooltiptext">Enter your username</span>

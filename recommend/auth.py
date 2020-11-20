@@ -159,7 +159,7 @@ def login():
             session["user_id"] = user["id"]
             return redirect(url_for("add_tastes"))
 
-        flash(error)
+        #flash(error)
 
         return render_template("auth/login.html", error=error, password=password, username=username)
     return render_template("auth/login.html", error=None, password='', username='')
