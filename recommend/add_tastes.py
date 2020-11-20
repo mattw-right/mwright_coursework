@@ -173,6 +173,7 @@ def add_to_listener_profile(id):
 @bp.route('/delete/artist/<int:id>')
 @login_required
 def delete_artist_from_listener_profile(id):
+    '''As it says on the tin: this delete an artist name <id> from the current user's listener profile'''
     artists, _ = most_recent_return.get_artists_and_tracks()
     db = get_db()
     db.execute('DELETE FROM listener_raw_data WHERE username="{}" AND title="{}"'.format(g.user["username"], artists[id]))
@@ -184,12 +185,11 @@ def delete_artist_from_listener_profile(id):
 @bp.route('/delete/track/<int:id>')
 @login_required
 def delete_track_from_listener_profile(id):
+    '''As it says on the tin: this delete an track name <id> from the current user's listener profile'''
     _, tracks = most_recent_return.get_artists_and_tracks()
     db = get_db()
     db.execute('DELETE FROM listener_raw_data WHERE username="{}" AND title="{}"'.format(g.user["username"], tracks[id]))
     db.commit()
-
-
     return redirect(url_for('add_tastes'))
 
 
