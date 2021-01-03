@@ -15,5 +15,73 @@
     <a id='toolbar_profile'>My Profile</a>
   </div>
 
+  <a href='/add_tastes/generate_playlists'>
+           <button class="add" id='generate_playlists'>Click here to generate playlists!</button>
+  </a>
+
+
+
+
+       {% if playlists and not error %}
+       {% set count = 0 %}
+     <table class="greyGridTable">
+      {% for playlist in playlists %}
+
+       <tr>
+
+        {% if playlist[5] %}
+         <td>  <img href='/my_playlists/{{ playlist[0] }}' style="-webkit-user-select: none;margin: auto;cursor: zoom-in;" src={{ playlist[5] }} width="100" height="100" id='cover_art'></td>
+        {% else %}
+        <td>  <img href='/my_playlists/{{ playlist[0] }}' style="-webkit-user-select: none;margin: auto;cursor: zoom-in;" src="{{url_for('static', filename='images/no_image_available.png')}}" width="100" height="100" id='cover_art'></td>
+        {% endif %}
+
+        {% if playlist[2] %}
+           <td><a id='playlist_link' href='/my_playlists/{{ playlist[0] }}'>{{ playlist[2] }}</a></td>
+        {% endif %}
+
+           {% if playlist[4] %}
+         <td><p class="contents" href='/my_playlists/{{ playlist[0] }}'>{{ playlist[4] }}</p></td>
+        {% endif %}
+
+
+</tr>
+         {% endfor %}
+
+         {% else %}
+
+       <p>AAAAHHHHHH!</p>
+
+         {% endif %}
+
+
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+         <tr><td></td></tr>
+
+     </table>
+</div>
+
+<!--
+<div id="invisible">
+
+         <p>a</p>
+         <p>a</p>
+         <p>a</p>
+         <p>a</p>
+         <p>a</p></div>-->
+
 </body>
 </html>

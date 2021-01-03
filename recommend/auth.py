@@ -10,7 +10,7 @@ from flask import session
 from flask import url_for
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
-from music_recommender.login.validate import *
+from recommend.validate import *
 
 from music_recommender.db import get_db
 

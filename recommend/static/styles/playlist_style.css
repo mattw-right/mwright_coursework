@@ -68,18 +68,16 @@ p{
   color: #323a45;
 }
 
-#generate_playlists{
-  color: #5faeb6;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #323a45;
-  border-radius: 10px;
-  font-size: 3vh;
-  border: none;
-  padding-left: 3%;
-}
+
+
+
+
+
+
+
+
 
 table.greyGridTable {
-  padding-top: 3%;
   padding-left: 3%;
   border: 0px solid #eef3db;
   width: auto;
@@ -92,6 +90,7 @@ table.greyGridTable {
   font-size: 2.5vh;
   color: #323a45;
   justify-content: center;
+  border-radius: 10px;
 }
 table.greyGridTable td, table.greyGridTable th {
   border: 0px solid #eef3db;
@@ -100,12 +99,12 @@ table.greyGridTable td, table.greyGridTable th {
 }
 table.greyGridTable tbody td {
 }
-table.greyGridTable td:nth-child(even) {
+table.greyGridTable tr:nth-child(even) {
   background: #323a45;
-  color: #f6f7f9;
-  font-size: 5vh;
-  text-align: left;
-  width: auto;
+}
+
+table.greyGridTable tr:nth-child(odd) {
+  background: #323a45;
 }
 
 .contents {
@@ -137,16 +136,20 @@ table.greyGridTable tfoot {
 table.greyGridTable tfoot td {
 }
 
-#invisible{
-  opacity: 0;
+#title{
+  font-size: 3vh;
+  overflow: hidden;
+  color: #f6f7f9;
+  text-align: left;
+}
+#preview_not_available{
+  font-size: 2vh;
+  color: #5faeb6;
+  overflow: hidden;
 }
 
-#playlist_link{
+#artist{
+  font-size: 2vh;
   color: #f6f7f9;
-  font-size: 5vh;
   text-align: left;
-  width: auto;
-  text-decoration: none;
-
-
 }

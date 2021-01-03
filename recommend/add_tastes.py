@@ -1,5 +1,5 @@
 
-from recommend.api.api_call import create_api_call
+from recommend.api.api_call import *
 from recommend.api.api_return_parser import *
 from flask import Flask
 from flask import render_template, request, g, url_for, redirect
@@ -71,10 +71,10 @@ def validate_query(query):
     contain any illegal characters (@£%^()/\'[]{}`~±§), if so, it returns an appropriate error message'''
     flag = False
     if len(query)>50:
-        return False, 'Oops, that search term looks a little long'
+        return False, ['Oops, that search term looks a little long']
     for i in list(query):
-        if i in list('@£%^()/\'[]{}~±§'):
-            return False, 'Oops, there look to be some illegal characters in that search term'
+        if i in list('@£%^()/\[]{}~±§'):
+            return False, ['Oops, there look to be some illegal characters in that search term']
     return True, ''
 
 
@@ -157,13 +157,30 @@ def search_descriptor():
 def add_to_listener_profile(id):
     '''When the user clicks the + button on the table of search results, they are redirected to /add_tastes/<id> where
     id is the index of the row of the list they have selected. This row is then added to the listener_raw_data table,
-    alongside the username. When added, it redirects back to the add_tastes page.'''
+    alongside the username. It also fetches the audio features from the Spotify API, and adds those to the songs table
+    of the database if it is a song, or adds the average of the artists top three tracks to the artists database
+    if it is an artist. When added, it redirects back to the add_tastes page.'''
     if most_recent_return.get():
         db = get_db()
         db.execute(
             "INSERT INTO listener_raw_data (username, title, listener_data) VALUES (?, ?, ?)",
             (g.user["username"], most_recent_return.get()[id][0], most_recent_return.get()[id][-1]),
         )
+        if most_recent_return.get()[id][-1].split(':')[1] == 'track': #check if it's a track
+            track = audio_features(retrieve_audio_features_of_track(most_recent_return.get()[id][-1]))
+            metadata = search_track_by_uri(most_recent_return.get()[id][-1])
+            print(metadata)
+            db.execute(
+                "INSERT INTO songs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (most_recent_return.get()[id][0], most_recent_return.get()[id][-1], track.return_danceability(), track.return_energy(), track.return_key(), track.return_loudness(), track.return_mode(), track.return_speechiness(), track.return_acousticness(), track.return_instrumentalness(), track.return_liveness(), track.return_valence(), track.return_tempo(), track.return_duration_ms(), track.return_time_signature(), metadata['album']['images'][0]['url'], metadata['album']['artists'][0]['external_urls']['spotify'], metadata['album']['artists'][0]['name'], metadata['preview_url']),
+            )
+        elif most_recent_return.get()[id][-1].split(':')[1] == 'artist':
+            artist = retrieve_audio_features_of_an_artist(most_recent_return.get()[id][-1])
+            metadata = search_artist_by_uri(most_recent_return.get()[id][-1])
+            db.execute(
+                "INSERT INTO artists VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (most_recent_return.get()[id][0], most_recent_return.get()[id][-1], artist[0], artist[1], artist[2], artist[3], artist[4], artist[5], artist[6], artist[7], artist[8], artist[9], artist[10], artist[11], artist[12], metadata['images'][0]['url'], ', '.join(metadata['genres'])),
+            )
         db.commit()
 
 
