@@ -33,6 +33,7 @@ class Most_Recent_Return:
         return self.artists, self.tracks
 
 def sort_raw_listener_data(raw_data):
+    '''Sorts raw listener data into two lists, one containing the tracks in it and the other teh artists'''
     raw_data = list(raw_data)
     structured_data = []
     for i in raw_data: structured_data.append(tuple(raw_data))
@@ -48,6 +49,7 @@ def sort_raw_listener_data(raw_data):
         return [], []
 
 def cut_off_length(list, max_length):
+    '''Inputs a list of lists and a maximum length; it then cuts down each sub-list to a maximum length of max_length and returns it'''
     output = []
     for i in list:
         if len(i) > max_length: output.append(i[:max_length])
@@ -133,7 +135,6 @@ def search_descriptor():
     There are two types of descriptor: year/year range, and genre, obviously differentiated by the presence of a number.
     This function thus checks for a number, and will carry out a "year:<>" search if it finds one, and "genre:<>" otherwise'''
     number_flag = False
-    advanced_query = None
     query = request.form['descriptor']
     flag, message = validate_query(query)
 

@@ -5,7 +5,11 @@ import sqlite3
 from recommend.api.api_call import retrieve_artists_top_tracks, search_track_by_uri
 
 
+'''STILL UNDER DEVELOPMENT, THIS CODE IS NOT USED IN PHASE 4'''
+
+
 def fourier_from_preview_url(preview_url):
+    '''Returns the fourier analysis of a track given its preview url'''
     return np.fft.fft(list(requests.get(preview_url + '.mp3').content))
 
 def fourier_from_track_uri(uri):
@@ -39,5 +43,5 @@ def fourier_artists_top_songs_from_uri(uri):
         averaged_fouriers.append(average)
     return averaged_fouriers
 
-print(fourier_artists_top_songs_from_uri('spotify:artist:7y97mc3bZRFXzT2szRM4L4'))
-print(fourier_from_track_uri('spotify:track:61OkaSO7VxyXf5jyOURtab'))
+print(len(fourier_artists_top_songs_from_uri('spotify:artist:7y97mc3bZRFXzT2szRM4L4')))
+print(len(fourier_from_track_uri('spotify:track:61OkaSO7VxyXf5jyOURtab')))

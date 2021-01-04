@@ -30,10 +30,12 @@ def validate_password(password):
 
 
 def validate_email(email):
+    '''Ensures an email using the validation rules ^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'''
     if (re.search(regex, email)): return True
     return False
 
 
 def is_common_password(password):
+    '''Ensures the password is not in a list of the 1000 most common passwords. .lower() ensures that it is not just a common password with some capitals added.'''
     if password.lower() in common_passwords: return True
     return False
