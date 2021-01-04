@@ -5,7 +5,7 @@ import sqlite3
 from recommend.api.api_call import retrieve_artists_top_tracks, search_track_by_uri
 
 
-'''STILL UNDER DEVELOPMENT, THIS CODE IS NOT USED IN PHASE 4'''
+'''STILL UNDER DEVELOPMENT, THIS CODE IS NOT USED IN PHASE 3'''
 
 
 def fourier_from_preview_url(preview_url):
