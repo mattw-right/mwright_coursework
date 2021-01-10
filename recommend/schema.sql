@@ -49,7 +49,8 @@ CREATE TABLE songs (
   photo_link TEXT,
   artist TEXT NOT NULL,
   artist_name TEXT NOT NULL,
-  preview_url TEXT
+  preview_url TEXT,
+  fourier TEXT
 );
 
 CREATE TABLE artists (
@@ -69,7 +70,8 @@ CREATE TABLE artists (
   duration_ms DOUBLE NOT NULL,
   time_signature DOUBLE NOT NULL,
   photo_link TEXT,
-  genres TEXT NOT NULL
+  genres TEXT NOT NULL,
+  fourier TEXT
 );
 
 
