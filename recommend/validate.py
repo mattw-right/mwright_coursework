@@ -17,7 +17,8 @@ def validate_username(username):
 
 
 def validate_password(password):
-    '''Ensures that the password has at least one capital, one lowercase letter, and one number'''
+    '''Ensures that the password has at least one capital, one lowercase letter, and one number and is more than 7 characters'''
+    if len(password) < 7: return False
     capital = False
     lowercase = False
     number = False

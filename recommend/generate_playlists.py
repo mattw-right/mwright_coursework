@@ -5,8 +5,9 @@ from recommend.auth import login_required
 from sklearn.cluster import KMeans
 from recommend.db import get_db
 from kneed import KneeLocator
-
-
+from recommend.fourier import generate_fourier_from_uri_list, convert_fourier_to_string
+from recommend.api.api_call import get_related_artists, get_related_artists_for_track_in_db
+from recommend.generate_recommendations import generate_recommendations
 
 app = Flask(__name__)
 
@@ -45,16 +46,27 @@ def index():
     # 4. Clusters songs in the newly created
     playlists = cluster_songs(af)
 
+
     # 5. Saving playlists to the database
     for i in list(playlists.keys()):
+        related_artists = ';'.join(get_related_artists_for_playlist(playlists[i]))
         title, content, photo_link = generate_title_and_content_and_photo_link(playlists[i])
+        fourier = convert_fourier_to_string(generate_fourier_from_uri_list(playlists[i]))
         y = db.execute('SELECT * FROM listener_profiles WHERE username=? AND listener_data=?', (username, ';'.join(playlists[i]))).fetchone()
         if y == None: #avoiding duplicates for user and listener data
-            db.execute('INSERT INTO listener_profiles (username, title, listener_data, content, photo_link) VALUES (?, ?, ?, ?, ?)', (username, title, ';'.join(playlists[i]), content, photo_link))
+            db.execute('INSERT INTO listener_profiles (username, title, listener_data, content, photo_link, fourier, related_artists, playlist_created_for) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (username, title, ';'.join(playlists[i]), content, photo_link, fourier, related_artists, 'False'))
 
-    # 6. Commit changes to and then close the database
+    # 6. Commit changes to the database
     db.commit()
+
+    # 7. Generate Recommendations based off of the newly created Listener Profiles
+    playlists = db.execute("SELECT * FROM listener_profiles WHERE username=? AND playlist_created_for='False'", (username, )).fetchall()
+    for playlist_id in playlists:
+       generate_recommendations(playlist_id[0], username)
+
     db.close()
+
+
 
     # 7. The user will then be redirected the the 'My Playlists' page
     return redirect(url_for('my_playlists'))
@@ -141,5 +153,19 @@ def cluster_songs(audio_data, force_no_of_clusters=False):
     for j, i in enumerate(predictions):
         clustered_songs[i].append(list(audio_data.keys())[j])
     return clustered_songs
+
+
+def get_related_artists_for_playlist(uris):
+    related_artists = []
+    for i in uris:
+        if i.split(':')[1] == 'track': related_artists.append(get_related_artists_for_track_in_db(i))
+        elif i.split(':')[1] == 'artist': related_artists.append(get_related_artists(i))
+        else: pass
+    output = []
+    for i in related_artists:
+        for j in i:
+            if j not in uris and j not in output:
+                output.append(j)
+    return output
 
 

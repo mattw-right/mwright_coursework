@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS listener_profiles;
 DROP TABLE IF EXISTS listener_raw_data;
 DROP TABLE IF EXISTS songs;
 DROP TABLE IF EXISTS artists;
+DROP TABLE IF EXISTS recommendations;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,8 +28,23 @@ CREATE TABLE listener_profiles (
   title TEXT NOT NULL,
   listener_data TEXT NOT NULL,
   content TEXT NOT NULL,
-  photo_link TEXT NOT NULL
+  photo_link TEXT NOT NULL,
+  fourier TEXT,
+  related_artists TEXT,
+  playlist_created_for TEXT
 );
+
+CREATE TABLE "recommendations" (
+	"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	"title"     TEXT NOT NULL,
+	"username"	TEXT NOT NULL,
+	"titles"	TEXT NOT NULL,
+	"uris"	TEXT NOT NULL
+);
+
+
+
+
 
 CREATE TABLE songs (
   title TEXT NOT NULL,
