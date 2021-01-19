@@ -76,10 +76,10 @@ def normalise_complex_array(a):
     return output
 
 
-'''
-An unused function kept just in case
+
 
 def generate_fourier_from_uri_list(list):
+    '''Generte Fourier analyses for a list of uris'''
     fouriers = []
     db = get_db()
     for i in list:
@@ -96,5 +96,3 @@ def generate_fourier_from_uri_list(list):
             average /= len(fouriers_filtered)
             averages.append(average)
     return averages
-
-'''
