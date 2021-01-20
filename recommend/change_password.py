@@ -18,11 +18,13 @@ bp = Blueprint("change_password", __name__, url_prefix="/change_password")
 
 @bp.route('/')
 def index():
+    '''Returns the Change Password back'''
     return render_template('change_password.html', username=g.user["username"])
 
 
 @bp.route("/", methods=("GET", "POST"))
 def change_password():
+    '''Changes the user's password as a response to the submitting of an HTML form'''
     if request.method == "POST":
         password = request.form["password"]
         password_verification = request.form["password_verification"]
