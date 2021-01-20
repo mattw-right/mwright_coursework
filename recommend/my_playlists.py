@@ -28,7 +28,7 @@ def index():
     return render_template('my_playlists.html', playlists=playlists_output)
 
 @bp.route('/<int:id>')
-@login_required
+#@login_required WARNING: commenting out this decorator means anyone can access any playlist of recommendations. This may compromise the integrity of the app.
 def open_indv_playlist(id):
     '''Renders the my playlists of the app'''
     db = get_db()
